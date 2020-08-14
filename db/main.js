@@ -9,23 +9,33 @@ const pool = mariadb.createPool({
 });
 
 const DB = {
-    async addNew(title, imagePath, text, topic) {
+    async addNew(title, imagePath, text, topic, subText) {
         let conn;
         let sqlQuery =
-            'INSERT INTO `db_86937`.`SITE_NEWS`  (`TITLE`, `IMAGE_PATH`, `TEXT`, `TOPIC`)  VALUE (?,?,?,?) ';
-        let data = [title, imagePath, text, topic];
+            'INSERT INTO `db_86937`.`SITE_NEWS`  (`TITLE`, `IMAGE_PATH`, `TEXT`, `TOPIC` , `SUB_TEXT`)  VALUE (?,?,?,?,?) ';
+        let data = [title, imagePath, text, topic, subText];
         try {
             conn = await pool.getConnection();
             const sqlResult = await conn.query(sqlQuery, data);
         } catch (err) {
+            console.log(err);
             throw err;
         } finally {
             if (conn) conn.release();
         }
     },
+    async getNews(id) {
+        let sqlQuery = 'SELECT * FROM `db_86937`.`SITE_NEWS` WHERE ID = ?';
+        let data = [id];
+        let result = await this.sendSql(sqlQuery, data);
+        if (result) {
+            return result;
+        }
+    },
     async getAllNews() {
         let conn;
-        let sqlQuery = 'SELECT * FROM `db_86937`.`SITE_NEWS`  ';
+        let sqlQuery =
+            'SELECT * FROM `db_86937`.`SITE_NEWS`  WHERE `HIDEN` = 0 ORDER BY `DATE` DESC '; // TODO not take all the posts on the non hidden
         let result = {};
         try {
             conn = await pool.getConnection();
@@ -37,6 +47,54 @@ const DB = {
             if (conn) conn.release();
         }
         return result;
+    },
+    async getAllSurvivalInfo() {
+        let conn;
+        let sqlQuery =
+            'SELECT `ID` ,`TITLE`, `IMAGE_PATH`, `TYPE`, `ORDER` FROM `db_86937`.`SITE_FEATURES` WHERE HIDDEN = 0';
+        let result = {};
+        try {
+            conn = await pool.getConnection();
+            const sqlResult = await conn.query(sqlQuery);
+            result = sqlResult;
+        } catch (err) {
+            throw err;
+        } finally {
+            console.log('1');
+            if (conn) conn.release();
+        }
+        return result;
+    },
+
+    async addSurvivalInfo(title, imagePath, text, orderer) {
+        let conn;
+        let sqlQuery =
+            'INSERT INTO `db_86937`.`SITE_FEATURES` ( `TITLE`, `IMAGE_PATH`, `TEXT`, `TYPE`, `ORDER`) VALUES (?,?,?,?,?);  ';
+        let data = [title, imagePath, text, 1, orderer]; // 1 == Survival
+        try {
+            conn = await pool.getConnection();
+            const sqlResult = await conn.query(sqlQuery, data);
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.release();
+        }
+    },
+    async sendSql(query, data) {
+        let conn;
+        let sqlResult;
+        try {
+            conn = await pool.getConnection();
+            sqlResult = await conn.query(query, data);
+        } catch (err) {
+            throw err;
+        } finally {
+            if (conn) conn.release();
+        }
+
+        if (sqlResult) {
+            return sqlResult;
+        }
     },
 };
 

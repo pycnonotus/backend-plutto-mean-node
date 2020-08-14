@@ -7,5 +7,6 @@ const newsMangerController = require('../controllers/newsManger');
 
 router.post('', newsMangerController.addNew);
 router.get('', newsMangerController.getNews);
+router.get('/:id', newsMangerController.getNew);
 
 module.exports = router;

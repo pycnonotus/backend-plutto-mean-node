@@ -2,6 +2,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const newMangerRoutes = require('./routers/newManger');
+const featureMangerRoutes = require('./routers/featureManger');
 // const Post = require('./models/post');
 
 const path = require('path');
@@ -28,5 +29,5 @@ app.use('/', (req, res, next) => {
 });
 
 app.use('/api/newsManger', newMangerRoutes);
-
+app.use('/api/featureManger', featureMangerRoutes);
 module.exports = app;
