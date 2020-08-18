@@ -117,12 +117,11 @@ const DB = {
     async isPlayerInServer(uuid) {
         let sqlQuery = 'SELECT * FROM USER WHERE `UUID` = ?';
         let data = [uuid];
-
+        
         const sqlResult = await this.sendSql(sqlQuery, data);
         console.log('im here');
         console.log(sqlResult);
         if (!sqlResult[0]) {
-            console.log('no minecraft user');
             throw new Error('no minecraft user ');
         }
         return sqlResult;
