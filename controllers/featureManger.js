@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 const db = require('./../db/main');
 
 exports.addSurvivalInfo = (req, res, next) => {
-    console.log('im here');
     db.addSurvivalInfo(
         req.body.title,
         req.body.imagePath,
@@ -21,7 +20,6 @@ exports.addSurvivalInfo = (req, res, next) => {
 exports.getAllSurvivalInfo = async (req, res, next) => {
     db.getAllSurvivalInfo()
         .then((info) => {
-            console.log(info);
             const fixedNews = info.map((item) => {
                 return {
                     id: item.ID,

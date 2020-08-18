@@ -1,6 +1,7 @@
 /* eslint-disable no-useless-catch */
 /* eslint-disable no-unused-vars */
 const mariadb = require('mariadb');
+const bcrypt = require('bcrypt');
 const pool = mariadb.createPool({
     host: '161.97.64.71',
     user: 'anton',
@@ -60,7 +61,6 @@ const DB = {
         } catch (err) {
             throw err;
         } finally {
-            console.log('1');
             if (conn) conn.release();
         }
         return result;
@@ -95,6 +95,25 @@ const DB = {
         if (sqlResult) {
             return sqlResult;
         }
+    },
+    async login(username, password) {
+        let hash = 'fuck all n';
+        hash = await bcrypt.hash(password, 9);
+        hash = hash + '';
+        console.log(hash);
+        let sqlQuery = 'SELECT * FROM db_86937.SITE_USER WHERE `USERNAME` = ?';
+        let data = [username];
+        const sqlResult = await this.sendSql(sqlQuery, data);
+        if (!sqlResult[0]) {
+            console.log('no uiser');
+            throw new Error('no user ');
+        }
+
+        if (await bcrypt.compare(password, sqlResult[0].PASSWORD)) {
+            return sqlResult;
+        }
+
+        throw new Error('wrong pass ');
     },
 };
 
