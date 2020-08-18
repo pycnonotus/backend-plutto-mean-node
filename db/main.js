@@ -87,6 +87,7 @@ const DB = {
             conn = await pool.getConnection();
             sqlResult = await conn.query(query, data);
         } catch (err) {
+            console.log(err);
             throw err;
         } finally {
             if (conn) conn.release();
@@ -100,12 +101,10 @@ const DB = {
         let hash = 'fuck all n';
         hash = await bcrypt.hash(password, 9);
         hash = hash + '';
-        console.log(hash);
         let sqlQuery = 'SELECT * FROM db_86937.SITE_USER WHERE `USERNAME` = ?';
         let data = [username];
         const sqlResult = await this.sendSql(sqlQuery, data);
         if (!sqlResult[0]) {
-            console.log('no uiser');
             throw new Error('no user ');
         }
 
@@ -114,6 +113,19 @@ const DB = {
         }
 
         throw new Error('wrong pass ');
+    },
+    async isPlayerInServer(uuid) {
+        let sqlQuery = 'SELECT * FROM USER WHERE `UUID` = ?';
+        let data = [uuid];
+
+        const sqlResult = await this.sendSql(sqlQuery, data);
+        console.log('im here');
+        console.log(sqlResult);
+        if (!sqlResult[0]) {
+            console.log('no minecraft user');
+            throw new Error('no minecraft user ');
+        }
+        return sqlResult;
     },
 };
 
