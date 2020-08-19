@@ -8,9 +8,8 @@ var request = require('request');
 
 exports.checkIfThereUser = async (req, res, next) => {
     const username = req.params.username;
-    console.log(1);
     const url = 'https://api.mojang.com/users/profiles/minecraft/' + username;
-    console.log(2);
+
     request({ url: url }, (err, response, body) => {
         if (err) {
             return res.status(400).json({ message: 'minecraft ilgaiel name' });
