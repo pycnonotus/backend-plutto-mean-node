@@ -36,6 +36,7 @@ exports.getNews = (req, res, next) => {
                     category: newsItem.TOPIC,
                     date: newsItem.DATE,
                     imagePath: newsItem.IMAGE_PATH,
+                    subText: newsItem.SUB_TEXT,
                 };
             });
             res.status(200).json({
@@ -55,14 +56,15 @@ exports.getNew = (req, res, next) => {
     db.getNews(req.params.id)
         .then((news) => {
             const fixedNews = news.map((newsItem) => {
+                console.log(newsItem);
                 return {
                     id: newsItem.ID,
                     title: newsItem.TITLE,
                     content: Buffer.from(newsItem.TEXT).toString(),
                     category: newsItem.TOPIC,
                     date: newsItem.DATE,
-                    imagePath: newsItem.IMAGE_PATH,
                     subText: newsItem.SUB_TEXT,
+                    imagePath: newsItem.IMAGE_PATH,
                 };
             });
             res.status(200).json({

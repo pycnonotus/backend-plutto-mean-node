@@ -33,10 +33,11 @@ const DB = {
             return result;
         }
     },
+
     async getAllNews() {
         let conn;
         let sqlQuery =
-            'SELECT * FROM `db_86937`.`SITE_NEWS`  WHERE `HIDEN` = 0 ORDER BY `DATE` DESC '; // TODO not take all the posts on the non hidden
+            'SELECT * FROM `db_86937`.`SITE_NEWS`  WHERE `HIDEN` = 0 ORDER BY `DATE` DESC ';
         let result = {};
         try {
             conn = await pool.getConnection();
@@ -117,7 +118,7 @@ const DB = {
     async isPlayerInServer(uuid) {
         let sqlQuery = 'SELECT * FROM USER WHERE `UUID` = ?';
         let data = [uuid];
-        
+
         const sqlResult = await this.sendSql(sqlQuery, data);
         console.log('im here');
         console.log(sqlResult);
